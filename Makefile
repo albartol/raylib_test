@@ -6,7 +6,7 @@ LIBS:=-lraylib -lopengl32 -lgdi32 -lwinmm
 
 NAME:=raylib_test.exe
 
-SRC=src/raylib_test.c
+SRC=src/raylib_test.c src/show_info.c src/draw_frame.c src/get_input.c
 
 OBJ=$(SRC:.c=.o)
 
@@ -16,7 +16,7 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBS)
 
 %.o: %.c
-	$(CC) $(CFLAGS)  -o $@ -c $< $(LIBS)
+	$(CC) $(CFLAGS) -o $@ -c $< $(LIBS)
 
 clean:
 	rm -f $(OBJ)
