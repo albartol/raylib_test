@@ -6,7 +6,7 @@ LIBS:=-lraylib -lopengl32 -lgdi32 -lwinmm
 
 NAME:=raylib_test.exe
 
-SRC=src/raylib_test.c src/show_info.c src/draw_frame.c src/get_input.c
+SRC=src/raylib_test.c src/show_info.c src/draw_frame.c src/get_input.c src/raycast.c
 
 OBJ=$(SRC:.c=.o)
 
