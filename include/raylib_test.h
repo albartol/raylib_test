@@ -11,22 +11,36 @@
 # include <float.h>
 # include <stdio.h>
 
-# define SCREEN_WIDTH 640
-# define SCREEN_HEIGHT 480
-# define TEXT_SIZE 20
-# define TILE_SIZE 64
-# define BIT_SIFT 6 /* 64 */
-# define PLAYER_SIZE 10
+// # define SCREEN_WIDTH 640
+// # define SCREEN_HEIGHT 480
+// # define TEXT_SIZE 20
+// # define TILE_SIZE 64
+// # define BIT_SIFT 6 /* 64 */
+// # define PLAYER_SIZE 10
 # define PLAYER_STEP 2.5f
 # define PLAYER_TURN 0.075f
 # define RADIAN (PI * 2.0f)
 # define PI_HALF (PI / 2.0f)
-# define QUADRANT_3 (3 * PI_HALF)
+# define QUADRANT_3 (3.0f * PI_HALF)
 # define ONE_DEG (1.0f * DEG2RAD)
-# define RAY_NUM 180
-# define RAY_WIDTH 4
-# define RAY_BIT 2
+// # define RAY_NUM 180
+// # define RAY_WIDTH 4
+// # define RAY_BIT 2
 # define ANGLE_PER_RAY (ONE_DEG / 2)
+
+typedef enum e_config_data
+{
+	FPS = 60,
+	WINDOW_WIDTH = 720,
+	WINDOW_HEIGHT = 450,
+	TEXT_SIZE = 20,
+	TILE_SIZE = 64,
+	BIT_SIFT = 6,
+	PLAYER_SIZE = 10,
+	RAY_NUM = 180,
+	RAY_WIDTH = 4,
+	RAY_BIT = 2
+}			t_config_data;
 
 typedef struct	s_ray
 {
@@ -70,6 +84,8 @@ typedef struct	s_data
 	int		map_size_y;
 	int		map_width;
 	int		map_height;
+	int		window_width;
+	int		window_height;
 	short	show_stats;
 	short	show_exit;
 	short	show_controls;
@@ -84,9 +100,9 @@ void	ft_draw_frame(t_data *data);
 
 void    ft_show_map(t_data *data);
 void	ft_show_mini_map(t_data *data);
-void	ft_show_exit(void);
+void	ft_show_exit(t_data *data);
 void	ft_show_stats(t_data *data);
-void	ft_show_controls(void);
+void	ft_show_controls(t_data *data);
 
 void    ft_raycast(t_data *data);
 

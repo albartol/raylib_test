@@ -102,8 +102,8 @@ void    ft_raycast(t_data *data)
 
 	if (!data->show_map)
 	{
-		DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT >> 1, LIGHTGRAY);
-		DrawRectangle(0, SCREEN_HEIGHT >> 1, SCREEN_WIDTH, SCREEN_HEIGHT >> 1, GRAY);
+		DrawRectangle(0, 0, data->window_width, data->window_height >> 1, LIGHTGRAY);
+		DrawRectangle(0, data->window_height >> 1, data->window_width, data->window_height >> 1, GRAY);
 	}
 	raycast.ray.angle = data->player.angle - (ONE_DEG * 45);
 	if (raycast.ray.angle < 0)
@@ -149,10 +149,10 @@ void    ft_raycast(t_data *data)
 		if (raycast.fisheye_angle > RADIAN)
 			raycast.fisheye_angle -= RADIAN;
 		raycast.dist *= cos(raycast.fisheye_angle);
-		raycast.wall_height = (TILE_SIZE * SCREEN_HEIGHT) / raycast.dist;
-		if (raycast.wall_height > SCREEN_HEIGHT)
-			raycast.wall_height = SCREEN_HEIGHT;
-		raycast.wall_offset = (SCREEN_HEIGHT >> 1) - raycast.wall_height / 2;
+		raycast.wall_height = (TILE_SIZE * data->window_height) / raycast.dist;
+		if (raycast.wall_height > data->window_height)
+			raycast.wall_height = data->window_height;
+		raycast.wall_offset = (data->window_height >> 1) - raycast.wall_height / 2;
 		if (!data->show_map)
 			DrawRectangle(raycast.ray_num << RAY_BIT, raycast.wall_offset, RAY_WIDTH, raycast.wall_height, raycast.ray_color);
 		raycast.ray_num++;

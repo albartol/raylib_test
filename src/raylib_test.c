@@ -27,7 +27,7 @@ static void	ft_init(t_data *data)
 	data->map_width = data->map_size_x << BIT_SIFT;
 	data->map_height = data->map_size_y << BIT_SIFT;
 
-	data->player.angle = PI_HALF;
+	data->player.angle = 0;
 
 	data->player.delta.x = cos(data->player.angle) * PLAYER_STEP;
 	data->player.delta.y = sin(data->player.angle) * PLAYER_STEP;
@@ -42,11 +42,16 @@ static void	ft_init(t_data *data)
 	data->show_controls = 1;
 
 	// InitWindow(data->map_width, data->map_height, "raylib_test");
-	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib_test");
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "raylib_test");
 
-	SetTargetFPS(60);
+	data->window_height = WINDOW_HEIGHT;
+	data->window_width = WINDOW_WIDTH;
+	// SetWindowSize(data->window_width, data->window_height);
+	// ToggleBorderlessWindowed();
+
+	SetTargetFPS(FPS);
 	SetExitKey(KEY_NULL);
-	HideCursor();
+	// HideCursor();
 }
 
 int main(void)

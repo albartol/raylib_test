@@ -89,12 +89,11 @@ static void	ft_check_input(t_data *data, int key)
 		else
 			data->show_stats = 1;
 	}
-	if (key == KEY_M)
+	if (key == KEY_F2)
 	{
 		if (data->show_map)
 		{
-
-			SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+			SetWindowSize(data->window_width, data->window_height);
 			data->show_map = 0;
 		}
 		else
@@ -103,7 +102,7 @@ static void	ft_check_input(t_data *data, int key)
 			data->show_map = 1;
 		}
 	}
-	if (key == KEY_N)
+	if (key == KEY_M)
 	{
 		if (data->show_mini_map)
 			data->show_mini_map = 0;
@@ -128,7 +127,7 @@ static void	ft_check_input(t_data *data, int key)
 	}
 	if (data->show_controls)
 	{
-		if (key == KEY_SPACE)
+		if (key != KEY_NULL)
 			data->show_controls = 0;
 	}
 }
