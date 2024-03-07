@@ -1,5 +1,19 @@
 #include "../include/raylib_test.h"
 
+static int	ft_check_movement(t_data *data)
+{
+	int	x;
+	int	y;
+	int	map_pos;
+
+	y = (int)data->player.position.y >> BIT_SIFT;
+	x = (int)data->player.position.x >> BIT_SIFT;
+	map_pos = y * data->map_size_x + x;
+	if (map_pos > 0 && map_pos < data->map_size_x * data->map_size_y && data->map[map_pos] == '1')
+		return (1);
+	return (0);
+}
+
 static void	ft_player_movement(t_data *data)
 {
 	if (IsKeyDown(KEY_E) || IsKeyDown(KEY_RIGHT))
@@ -22,11 +36,21 @@ static void	ft_player_movement(t_data *data)
 	{
 		data->player.position.x += data->player.delta.x;
 		data->player.position.y += data->player.delta.y;
+		if (ft_check_movement(data))
+		{
+			data->player.position.x -= data->player.delta.x;
+			data->player.position.y -= data->player.delta.y;
+		}
 	}
 	if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN))
 	{
 		data->player.position.x -= data->player.delta.x;
 		data->player.position.y -= data->player.delta.y;
+		if (ft_check_movement(data))
+		{
+			data->player.position.x += data->player.delta.x;
+			data->player.position.y += data->player.delta.y;
+		}
 	}
 	if (IsKeyDown(KEY_D))
 	{
@@ -35,6 +59,11 @@ static void	ft_player_movement(t_data *data)
 			data->player.side_angle -= RADIAN;
 		data->player.position.x += cos(data->player.side_angle) * PLAYER_STEP;
 		data->player.position.y += sin(data->player.side_angle) * PLAYER_STEP;
+		if (ft_check_movement(data))
+		{
+			data->player.position.x -= cos(data->player.side_angle) * PLAYER_STEP;
+			data->player.position.y -= sin(data->player.side_angle) * PLAYER_STEP;
+		}
 	}
 	if (IsKeyDown(KEY_A))
 	{
@@ -43,6 +72,11 @@ static void	ft_player_movement(t_data *data)
 			data->player.side_angle += RADIAN;
 		data->player.position.x += cos(data->player.side_angle) * PLAYER_STEP;
 		data->player.position.y += sin(data->player.side_angle) * PLAYER_STEP;
+		if (ft_check_movement(data))
+		{
+			data->player.position.x -= cos(data->player.side_angle) * PLAYER_STEP;
+			data->player.position.y -= sin(data->player.side_angle) * PLAYER_STEP;
+		}
 	}
 }
 
@@ -58,9 +92,23 @@ static void	ft_check_input(t_data *data, int key)
 	if (key == KEY_M)
 	{
 		if (data->show_map)
+		{
+
+			SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 			data->show_map = 0;
+		}
 		else
+		{
+			SetWindowSize(data->map_width, data->map_height);
 			data->show_map = 1;
+		}
+	}
+	if (key == KEY_N)
+	{
+		if (data->show_mini_map)
+			data->show_mini_map = 0;
+		else
+			data->show_mini_map = 1;
 	}
 	if (key == KEY_ESCAPE)
 	{

@@ -17,7 +17,8 @@ static void	ft_horizontal_colision(t_data *data, t_raycast *raycast)
 	}
 	else if (raycast->ray.angle > PI) /* THIRD && FOURTH QUADRANTS */
 	{
-		raycast->ray.position.y = (((int)data->player.position.y >> BIT_SIFT) << BIT_SIFT) - 0.000001;
+		// raycast->ray.position.y = (((int)data->player.position.y >> BIT_SIFT) << BIT_SIFT) - 0.00000763;
+		raycast->ray.position.y = (((int)data->player.position.y >> BIT_SIFT) << BIT_SIFT) - 0.1;
 		raycast->ray.position.x = (data->player.position.y - raycast->ray.position.y) * raycast->inverse_neg_tan + data->player.position.x;
 		raycast->ray.offset.y = -TILE_SIZE;
 		raycast->ray.offset.x = TILE_SIZE * raycast->inverse_neg_tan;
@@ -48,10 +49,6 @@ static void	ft_horizontal_colision(t_data *data, t_raycast *raycast)
 			raycast->depth_of_ray++;
 		}
 	}
-	// DrawText(TextFormat("H_Ray_Position - x: %.4f - y: %.4f", raycast->ray.position.x, raycast->ray.position.y), 10, 5, TEXT_SIZE, BLACK);
-	// DrawText(TextFormat("H_Ray_Offset - x: %.4f - y: %.4f", raycast->ray.offset.x, raycast->ray.offset.y), 10, 25, TEXT_SIZE, BLACK);
-	// DrawText(TextFormat("H_Ray_Angle: %.2fº", raycast->ray.angle * RAD2DEG), 10, 45, TEXT_SIZE, BLACK);
-	// DrawLineV(data->player.position, raycast->ray.position, GREEN);
 }
 
 static void	ft_vertical_colision(t_data *data, t_raycast *raycast)
@@ -97,16 +94,17 @@ static void	ft_vertical_colision(t_data *data, t_raycast *raycast)
 			raycast->depth_of_ray++;
 		}
 	}
-	// DrawText(TextFormat("V_Ray_Position - x: %.4f - y: %.4f", raycast->ray.position.x, raycast->ray.position.y), 10, 5, TEXT_SIZE, BLACK);
-	// DrawText(TextFormat("V_Ray_Offset - x: %.4f - y: %.4f", raycast->ray.offset.x, raycast->ray.offset.y), 10, 25, TEXT_SIZE, BLACK);
-	// DrawText(TextFormat("V_Ray_Angle: %.2fº", raycast->ray.angle * RAD2DEG), 10, 45, TEXT_SIZE, BLACK);
-	// DrawLineV(data->player.position, raycast->ray.position, ORANGE);
 }
 
 void    ft_raycast(t_data *data)
 {
 	t_raycast	raycast;
 
+	if (!data->show_map)
+	{
+		DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT >> 1, LIGHTGRAY);
+		DrawRectangle(0, SCREEN_HEIGHT >> 1, SCREEN_WIDTH, SCREEN_HEIGHT >> 1, GRAY);
+	}
 	raycast.ray.angle = data->player.angle - (ONE_DEG * 45);
 	if (raycast.ray.angle < 0)
 		raycast.ray.angle += RADIAN;
@@ -118,9 +116,12 @@ void    ft_raycast(t_data *data)
 	raycast.ver_col.y = data->player.position.y;
 	raycast.hor_col.x = data->player.position.x;
 	raycast.hor_col.y = data->player.position.y;
+	raycast.ray.position.y = data->player.position.y;
+	raycast.ray.position.x = data->player.position.x;
 	raycast.ray_num = 0;
-	while (raycast.ray_num < 90)
+	while (raycast.ray_num < RAY_NUM)
 	{
+		raycast.ray_color = RED;
 		raycast.neg_tan = -tan(raycast.ray.angle);
 		raycast.inverse_neg_tan = 1 / raycast.neg_tan;
 		ft_horizontal_colision(data, &raycast);
@@ -130,21 +131,32 @@ void    ft_raycast(t_data *data)
 			raycast.ray.position.x = raycast.ver_col.x;
 			raycast.ray.position.y = raycast.ver_col.y;
 			raycast.dist = raycast.col_dist.y;
-			DrawLineV(data->player.position, raycast.ray.position, ORANGE);
+			if (data->show_map)
+				DrawLineV(data->player.position, raycast.ray.position, ORANGE);
+			raycast.ray_color = MAROON;
 		}
 		else
 		{
 			raycast.ray.position.x = raycast.hor_col.x;
 			raycast.ray.position.y = raycast.hor_col.y;
 			raycast.dist = raycast.col_dist.x;
-			DrawLineV(data->player.position, raycast.ray.position, GREEN);
+			if (data->show_map)
+				DrawLineV(data->player.position, raycast.ray.position, GREEN);
 		}
-		// DrawLineV(data->player.position, raycast.ray.position, RED);
-		// printf("Final dist: %f\nFinal angle: %f\n", raycast.dist, raycast.ray.angle * RAD2DEG);
-		// printf("Ray pos - x: %f - y: %f\n", raycast.ray.position.x, raycast.ray.position.y);
-		// printf("Player pos - x: %f - y: %f\n", data->player.position.x, data->player.position.y);
+		raycast.fisheye_angle = data->player.angle - raycast.ray.angle;
+		if (raycast.fisheye_angle < 0)
+			raycast.fisheye_angle += RADIAN;
+		if (raycast.fisheye_angle > RADIAN)
+			raycast.fisheye_angle -= RADIAN;
+		raycast.dist *= cos(raycast.fisheye_angle);
+		raycast.wall_height = (TILE_SIZE * SCREEN_HEIGHT) / raycast.dist;
+		if (raycast.wall_height > SCREEN_HEIGHT)
+			raycast.wall_height = SCREEN_HEIGHT;
+		raycast.wall_offset = (SCREEN_HEIGHT >> 1) - raycast.wall_height / 2;
+		if (!data->show_map)
+			DrawRectangle(raycast.ray_num << RAY_BIT, raycast.wall_offset, RAY_WIDTH, raycast.wall_height, raycast.ray_color);
 		raycast.ray_num++;
-		raycast.ray.angle += ONE_DEG;
+		raycast.ray.angle += ANGLE_PER_RAY;
 		if (raycast.ray.angle < 0)
 			raycast.ray.angle += RADIAN;
 		if (raycast.ray.angle > RADIAN)

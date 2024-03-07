@@ -11,6 +11,8 @@
 # include <float.h>
 # include <stdio.h>
 
+# define SCREEN_WIDTH 640
+# define SCREEN_HEIGHT 480
 # define TEXT_SIZE 20
 # define TILE_SIZE 64
 # define BIT_SIFT 6 /* 64 */
@@ -21,6 +23,10 @@
 # define PI_HALF (PI / 2.0f)
 # define QUADRANT_3 (3 * PI_HALF)
 # define ONE_DEG (1.0f * DEG2RAD)
+# define RAY_NUM 180
+# define RAY_WIDTH 4
+# define RAY_BIT 2
+# define ANGLE_PER_RAY (ONE_DEG / 2)
 
 typedef struct	s_ray
 {
@@ -32,6 +38,7 @@ typedef struct	s_ray
 typedef struct	s_raycast
 {
 	t_ray	ray;
+	Color	ray_color;
 	int		ray_num;
 	int		depth_of_ray;
 	float	neg_tan;
@@ -43,6 +50,9 @@ typedef struct	s_raycast
 	Vector2	ver_col;
 	Vector2	col_dist;
 	float	dist;
+	float	wall_height;
+	float	wall_offset;
+	float	fisheye_angle;
 }				t_raycast;
 
 typedef struct	s_player
@@ -58,12 +68,13 @@ typedef struct	s_data
 	char	*map;
 	int		map_size_x;
 	int		map_size_y;
-	int		screenWidth;
-	int		screenHeight;
+	int		map_width;
+	int		map_height;
 	short	show_stats;
 	short	show_exit;
 	short	show_controls;
 	short	show_map;
+	short	show_mini_map;
 	t_player	player;
 }				t_data;
 
@@ -72,9 +83,10 @@ void	ft_get_input(t_data *data);
 void	ft_draw_frame(t_data *data);
 
 void    ft_show_map(t_data *data);
-void	ft_show_exit(t_data *data);
+void	ft_show_mini_map(t_data *data);
+void	ft_show_exit(void);
 void	ft_show_stats(t_data *data);
-void	ft_show_controls(t_data *data);
+void	ft_show_controls(void);
 
 void    ft_raycast(t_data *data);
 
